@@ -46,8 +46,8 @@ for user_id, user_name in users:
         code = e.args[0]
         if code == "already_in_channel":
             print("{} is already in the channel".format(user_name))
-        elif code in ('cant_invite_self', 'cant_invite'):
-            print("Can't invite {}, skipping...".format(user_name))
+        elif code in ('cant_invite_self', 'cant_invite', 'user_is_ultra_restricted'):
+            print("Skipping user {} ('{}')".format(user_name, code))
         else:
             raise
 
