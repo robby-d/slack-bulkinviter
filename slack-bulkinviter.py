@@ -10,24 +10,31 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-b", "--bots", action='store_true', help="Include bots in channel")
 parser.add_argument("-a", "--apps", action='store_true', help="Include apps in channel")
 parser.add_argument("-c", "--channel", required=True, metavar="<Channel Name>", help="Set channel name to add members")
-parser.add_argument("-k", "--apikey", required=True, metavar="<filename>", help="Path to API Key file")
+parser.add_argument("-k", "--apikey", metavar="'API Key Text String'", help="API Key string")
+parser.add_argument("-f", "--apifile", metavar="<filename>", help="Path to API Key file - only required is not using --apikey|-k")
 
 # read arguments from the command line
 args = parser.parse_args()
 
-# Load API key from apikey.txt
-try:
-    with open(args.apikey) as f:
-        api_key = f.read().strip()
-        assert api_key
-except IOError:
-    print("Cannot find API Key file {}, or other reading error".format(args.apikey))
-    sys.exit(1)
-except AssertionError:
-    print("Empty API key")
-    sys.exit(1)
+if args.apikey is None and args.apifile is None:
+    parser.error("You must pass an API Text String using --apikey or path to an APi Key File using --apifile")
+
+if args.apikey:
+    slack = Slacker(args.apikey)
 else:
-    slack = Slacker(api_key)
+    # Load API key from apikey.txt
+    try:
+        with open(args.apifile) as f:
+            api_key = f.read().strip()
+            assert api_key
+    except IOError:
+        print("Cannot find API Key file {}, or other reading error".format(args.apifile))
+        sys.exit(1)
+    except AssertionError:
+        print("Empty API key")
+        sys.exit(1)
+    else:
+        slack = Slacker(api_key)
 
 # Get channel id from name
 response = slack.channels.list()
@@ -41,7 +48,8 @@ channel_id = channels[0]['id']
 # Get users list
 response = slack.users.list()
 
-users = [(u['id'], u['name']) for u in response.body['members']]
+#users = [(u['id'], u['name']) for u in response.body['members']]
+users =[('U1T9U39PA', 'dkuei'), ('UAPLLKTA4', 'zendesk'), ('UARL5A8A1', 'bitbucket')]
 
 # Invite all users to slack channel
 for user_id, user_name in users:
