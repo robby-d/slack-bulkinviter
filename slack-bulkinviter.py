@@ -48,8 +48,7 @@ channel_id = channels[0]['id']
 # Get users list
 response = slack.users.list()
 
-#users = [(u['id'], u['name']) for u in response.body['members']]
-users =[('U1T9U39PA', 'dkuei'), ('UAPLLKTA4', 'zendesk'), ('UARL5A8A1', 'bitbucket')]
+users = [(u['id'], u['name']) for u in response.body['members']]
 
 # Invite all users to slack channel
 for user_id, user_name in users:
