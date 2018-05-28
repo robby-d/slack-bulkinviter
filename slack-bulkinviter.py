@@ -1,12 +1,14 @@
 #! /usr/bin/env python3
 import sys
 import argparse
+import time
 from slacker import Slacker, Error
 
 # Initiate the parser
 parser = argparse.ArgumentParser()
 
 # add long and short argument
+parser.add_argument("-s", "--sleep", type=int, default=0, help="Seconds to sleep between API calls. DEfaults to 0.")
 parser.add_argument("-b", "--bots", action='store_true', help="Include bots in channel")
 parser.add_argument("-a", "--apps", action='store_true', help="Include apps in channel")
 parser.add_argument("-c", "--channel", required=True, metavar="<Channel Name>", help="Set channel name to add members")
@@ -67,4 +69,8 @@ for user_id, user_name in users:
             print("Skipping app user {} ('{}')".format(user_name, code))
         else:
             raise
+
+    if args.sleep:
+        print("Sleeping {} seconds".format(args.sleep))
+        time.sleep(args.sleep)
 
