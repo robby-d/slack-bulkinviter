@@ -26,7 +26,7 @@ else:
 
 # Get channel id from name
 response = slack.channels.list()
-channels = [d for d in response.body['channels'] if d['is_private'] == False]
+channels = [d for d in response.body['channels'] if (d['is_private'] == False and d['is_archived'] == False)]
 if not len(channels):
     print("Cannot find any non private channel")
     sys.exit(1)
