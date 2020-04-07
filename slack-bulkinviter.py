@@ -49,12 +49,15 @@ channel_id = channels[0]['id']
 
 # Get users list
 response = slack.users.list()
+users = [(u['id'], u['name'], u['deleted'], u['is_bot'], u['is_restricted'], u['is_ultra_restricted']) for u in response.body['members']]
 
-users = [(u['id'], u['name']) for u in response.body['members']]
+# Invite all users to slack channel except single or multi-channel guests, bots, or deleted users.
+for user_id, user_name, user_deleted, user_is_bot, user_is_restricted, user_is_ultra_restricted in users:
+    if user_deleted == True or user_is_bot == True or user_is_restricted == True or user_is_ultra_restricted == True:
+        print("{} is deleted, bot, or guest; skipping".format(user_name))
+        continue
+    print("Inviting {} to {}".format(user_name, channel_name))
 
-# Invite all users to slack channel
-for user_id, user_name in users:
-    print("Inviting {} to {}".format(user_name, args.channel))
     try:
         slack.channels.invite(channel_id, user_id)
     except Error as e:
@@ -73,4 +76,3 @@ for user_id, user_name in users:
     if args.sleep:
         print("Sleeping {} seconds".format(args.sleep))
         time.sleep(args.sleep)
-
