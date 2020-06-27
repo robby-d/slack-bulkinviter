@@ -46,6 +46,7 @@ if not len(channels):
     sys.exit(1)
 assert len(channels) == 1
 channel_id = channels[0]['id']
+channel_name = channels[0]['name']
 
 # Get users list
 response = slack.users.list()
